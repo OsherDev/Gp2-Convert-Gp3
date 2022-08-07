@@ -19,3 +19,24 @@ def lambda_handler(event, context):
             print(f"{VolumeId} does not fit criteria")
     except botocore.exceptions.ClientError as error:
         print(error)
+
+       
+  --------------------------------------------------------------------------------------------------------
+
+import boto3
+import botocore
+
+client = boto3.client('ec2')
+
+def lambda_handler(event, context):
+    response = client.describe_volumes()
+    for result in response['Volumes']:
+        VolumeId = result['VolumeId']
+        VolumeType = result['VolumeType']
+        Size = result['Size']
+        IOP = result['Iops']
+        if VolumeType  == 'gp2':
+            modify = client.modify_volume(VolumeId=VolumeId,VolumeType='gp3')
+            print(f"{VolumeId} chnaged to gp3")
+        else: 
+            print(f"{VolumeId} does not fit criteria")
